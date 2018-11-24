@@ -1,0 +1,10 @@
+[package]
+
+name = "tetris"
+version = "0.0.1"
+authors = [ "Patrick Gombert <pg@patrickgombert.com>" ]
+
+[dependencies]
+
+ggez = "0.4"
+rand = "0.6.1"

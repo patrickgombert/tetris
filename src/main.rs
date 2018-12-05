@@ -1,10 +1,10 @@
 extern crate ggez;
 
-mod grid;
+mod tetris;
 
 use ggez::event::Keycode;
 use ggez::{event, graphics, Context, GameResult};
-use grid::Grid;
+use tetris::grid::Grid;
 
 struct GameState {
     score: i32,

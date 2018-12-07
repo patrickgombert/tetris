@@ -12,7 +12,7 @@ pub struct Grid {
 impl Grid {
     pub fn new(height: u8, width: u8) -> Self {
         let mut state = HashSet::new();
-        let piece = Box::leak(random(height, width));
+        let piece = random(height, width);
         Grid { height, width, state, piece }
     }
 }

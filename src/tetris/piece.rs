@@ -5,11 +5,12 @@ use tetris::piece::rand::prelude::*;
 
 #[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Coord {
-    x: u8,
-    y: u8
+    pub x: u8,
+    pub y: u8
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union Piece {
     i: I,
     o: O,
@@ -119,7 +120,7 @@ impl L {
 }
 
 pub fn random(height: u8, width: u8) -> Piece {
-    let r = rand::thread_rng().gen::<i8>();
+    let r = rand::thread_rng().next_u32();
     match r % 7 {
         0 => Piece{ i: I::new(height, width) },
         1 => Piece{ o: O::new(height, width) },
@@ -385,6 +386,30 @@ pub fn rotate(piece: Piece) -> Piece {
             Piece { z } => rotate_z(z),
             Piece { j } => rotate_j(j),
             Piece { l } => rotate_l(l)
+        }
+    }
+}
+
+fn _into_set(state: State) -> HashSet<Coord> {
+    let (s1, s2, s3, s4) = state.coords;
+    let mut coords = HashSet::new();
+    coords.insert(s1);
+    coords.insert(s2);
+    coords.insert(s3);
+    coords.insert(s4);
+    coords
+}
+
+pub fn into_set(piece: Piece) -> HashSet<Coord> {
+    unsafe {
+        match piece {
+            Piece { i } => _into_set(i.state),
+            Piece { o } => _into_set(o.state),
+            Piece { t } => _into_set(t.state),
+            Piece { s } => _into_set(s.state),
+            Piece { z } => _into_set(z.state),
+            Piece { j } => _into_set(j.state),
+            Piece { l } => _into_set(l.state)
         }
     }
 }

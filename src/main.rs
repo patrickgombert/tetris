@@ -40,8 +40,10 @@ impl event::EventHandler for GameState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
-		graphics::set_background_color(ctx, [0.6, 0.6, 0.9, 1.0].into());
+		graphics::set_background_color(ctx, [0.4, 0.1, 0.1, 1.0].into());
         tetris::graphics::score(ctx, self.score)?;
+		tetris::graphics::next_piece(ctx, self.grid.next_piece)?;
+		tetris::graphics::grid(ctx, &self.grid)?;
 		graphics::present(ctx);
 		ggez::timer::yield_now();
         Ok(())

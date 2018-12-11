@@ -145,13 +145,13 @@ fn _left(state: State) -> State {
 pub fn left(piece: Piece) -> Piece {
     unsafe {
         match piece {
-            Piece { i } => Piece{ i: I{ state: _left(i.state) } },
-            Piece { o } => Piece{ o: O{ state: _left(o.state) } },
-            Piece { t } => Piece{ t: T{ state: _left(t.state) } },
-            Piece { s } => Piece{ s: S{ state: _left(s.state) } },
-            Piece { z } => Piece{ z: Z{ state: _left(z.state) } },
-            Piece { j } => Piece{ j: J{ state: _left(j.state) } },
-            Piece { l } => Piece{ l: L{ state: _left(l.state) } }
+            Piece { i } => { Piece{ i: I{ state: _left(i.state) } } }
+            Piece { o } => { Piece{ o: O{ state: _left(o.state) } } }
+            Piece { t } => { Piece{ t: T{ state: _left(t.state) } } }
+            Piece { s } => { Piece{ s: S{ state: _left(s.state) } } }
+            Piece { z } => { Piece{ z: Z{ state: _left(z.state) } } }
+            Piece { j } => { Piece{ j: J{ state: _left(j.state) } } }
+            Piece { l } => { Piece{ l: L{ state: _left(l.state) } } }
         }
     }
 }
@@ -168,13 +168,13 @@ fn _right(state: State) -> State {
 pub fn right(piece: Piece) -> Piece {
     unsafe {
         match piece {
-            Piece { i } => Piece{ i: I{ state: _right(i.state) } },
-            Piece { o } => Piece{ o: O{ state: _right(o.state) } },
-            Piece { t } => Piece{ t: T{ state: _right(t.state) } },
-            Piece { s } => Piece{ s: S{ state: _right(s.state) } },
-            Piece { z } => Piece{ z: Z{ state: _right(z.state) } },
-            Piece { j } => Piece{ j: J{ state: _right(j.state) } },
-            Piece { l } => Piece{ l: L{ state: _right(l.state) } }
+            Piece { i } => { Piece{ i: I{ state: _right(i.state) } } }
+            Piece { o } => { Piece{ o: O{ state: _right(o.state) } } }
+            Piece { t } => { Piece{ t: T{ state: _right(t.state) } } }
+            Piece { s } => { Piece{ s: S{ state: _right(s.state) } } }
+            Piece { z } => { Piece{ z: Z{ state: _right(z.state) } } }
+            Piece { j } => { Piece{ j: J{ state: _right(j.state) } } }
+            Piece { l } => { Piece{ l: L{ state: _right(l.state) } } }
         }
     }
 }
@@ -191,13 +191,13 @@ fn _down(state: State) -> State {
 pub fn down(piece: Piece) -> Piece {
     unsafe {
         match piece {
-            Piece { i } => Piece{ i: I{ state: _down(i.state) } },
-            Piece { o } => Piece{ o: O{ state: _down(o.state) } },
-            Piece { t } => Piece{ t: T{ state: _down(t.state) } },
-            Piece { s } => Piece{ s: S{ state: _down(s.state) } },
-            Piece { z } => Piece{ z: Z{ state: _down(z.state) } },
-            Piece { j } => Piece{ j: J{ state: _down(j.state) } },
-            Piece { l } => Piece{ l: L{ state: _down(l.state) } }
+            Piece { i } => { Piece{ i: I{ state: _down(i.state) } } }
+            Piece { o } => { Piece{ o: O{ state: _down(o.state) } } }
+            Piece { t } => { Piece{ t: T{ state: _down(t.state) } } }
+            Piece { s } => { Piece{ s: S{ state: _down(s.state) } } }
+            Piece { z } => { Piece{ z: Z{ state: _down(z.state) } } }
+            Piece { j } => { Piece{ j: J{ state: _down(j.state) } } }
+            Piece { l } => { Piece{ l: L{ state: _down(l.state) } } }
         }
     }
 }
@@ -379,13 +379,13 @@ fn rotate_l(l: L) -> Piece {
 pub fn rotate(piece: Piece) -> Piece {
     unsafe {
         match piece {
-            Piece { i } => rotate_i(i),
-            Piece { o } => Piece{ o: o },
-            Piece { t } => rotate_t(t),
-            Piece { s } => rotate_s(s),
-            Piece { z } => rotate_z(z),
-            Piece { j } => rotate_j(j),
-            Piece { l } => rotate_l(l)
+            Piece { i } => { rotate_i(i) }
+            Piece { o } => { Piece{ o: o } }
+            Piece { t } => { rotate_t(t) }
+            Piece { s } => { rotate_s(s) }
+            Piece { z } => { rotate_z(z) }
+            Piece { j } => { rotate_j(j) }
+            Piece { l } => { rotate_l(l) }
         }
     }
 }
@@ -403,13 +403,35 @@ fn _into_set(state: State) -> HashSet<Coord> {
 pub fn into_set(piece: Piece) -> HashSet<Coord> {
     unsafe {
         match piece {
-            Piece { i } => _into_set(i.state),
-            Piece { o } => _into_set(o.state),
-            Piece { t } => _into_set(t.state),
-            Piece { s } => _into_set(s.state),
-            Piece { z } => _into_set(z.state),
-            Piece { j } => _into_set(j.state),
-            Piece { l } => _into_set(l.state)
+            Piece { i } => { _into_set(i.state) }
+            Piece { o } => { _into_set(o.state) }
+            Piece { t } => { _into_set(t.state) }
+            Piece { s } => { _into_set(s.state) }
+            Piece { z } => { _into_set(z.state) }
+            Piece { j } => { _into_set(j.state) }
+            Piece { l } => { _into_set(l.state) }
         }
     }
+}
+
+const I_COLOR: [f32; 4] = [0.6, 0.8, 0.9, 0.8];
+const O_COLOR: [f32; 4] = [0.9, 0.8, 0.0, 0.8];
+const T_COLOR: [f32; 4] = [0.9, 0.2, 1.0, 0.8];
+const S_COLOR: [f32; 4] = [0.6, 0.8, 0.5, 0.8];
+const Z_COLOR: [f32; 4] = [0.7, 0.1, 0.2, 0.8];
+const J_COLOR: [f32; 4] = [0.4, 0.1, 1.0, 0.8];
+const L_COLOR: [f32; 4] = [0.9, 0.5, 0.0, 0.8];
+
+pub fn piece_color(piece: Piece) -> [f32; 4] {
+	unsafe {
+		match piece {
+            Piece { i } => { I_COLOR }
+            Piece { o } => { O_COLOR }
+            Piece { t } => { T_COLOR }
+            Piece { s } => { S_COLOR }
+            Piece { z } => { Z_COLOR }
+            Piece { j } => { J_COLOR }
+            Piece { l } => { L_COLOR }
+		}
+	}
 }

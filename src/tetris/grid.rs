@@ -3,18 +3,18 @@ use tetris::piece::{down, left, into_set, random, right, rotate, Coord, Piece};
 
 // A grid is the set of occupied coords
 pub struct Grid {
-    height: u8,
-    width: u8,
+    height: i8,
+    width: i8,
     pub state: HashSet<Coord>,
     pub piece: Piece,
     pub next_piece: Piece
 }
 
 impl Grid {
-    pub fn new(height: u8, width: u8) -> Self {
+    pub fn new(height: i8, width: i8) -> Self {
         let state = HashSet::new();
-        let piece = random(height, width);
-        let next_piece = random(height, width);
+        let piece = random(width);
+        let next_piece = random(width);
         Grid { height, width, state, piece, next_piece }
     }
 

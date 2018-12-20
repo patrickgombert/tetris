@@ -7,8 +7,8 @@ use tetris::grid::Grid;
 use tetris::piece::{into_set, piece_color, Coord, Piece};
 
 const PIECE_BOX_SIZE: i32 = 39;
-const OUTER_BOX_COLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.8];
-const INNER_BOX_COLOR: [f32; 4] = [1.0, 1.0, 1.0, 0.8];
+const OUTER_BOX_COLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.5];
+const INNER_BOX_COLOR: [f32; 4] = [1.0, 1.0, 1.0, 0.6];
 
 pub fn score(ctx: &mut Context, score: u32) -> GameResult<()> {
     let outer_box = graphics::Rect::new_i32(600, 40, 200, 50);
@@ -40,7 +40,7 @@ pub fn grid(ctx: &mut Context, grid: &Grid) -> GameResult<()> {
     graphics::rectangle(ctx, graphics::DrawMode::Fill, outer_box)?;
     graphics::set_color(ctx, INNER_BOX_COLOR.into())?;
     graphics::rectangle(ctx, graphics::DrawMode::Fill, inner_box)?;
-    graphics::set_color(ctx, [0.0, 0.0, 0.0, 0.4].into())?;
+    graphics::set_color(ctx, [0.0, 0.0, 0.0, 1.0].into())?;
     for i in (80..470).step_by(PIECE_BOX_SIZE as usize) {
         graphics::line(
             ctx,
@@ -57,7 +57,9 @@ fn draw_piece(ctx: &mut Context,
               y_axis: i32) -> GameResult<()> {
     graphics::set_color(ctx, piece_color(piece).into())?;
     for coord in into_set(piece) {
-        let rect = graphics::Rect::new_i32(coord.x as i32, coord.y as i32, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
+        let x = x_axis + ((coord.x as i32) * PIECE_BOX_SIZE);
+        let y = y_axis - ((coord.y as i32) * PIECE_BOX_SIZE);
+        let rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
         graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
     }
     Ok(())

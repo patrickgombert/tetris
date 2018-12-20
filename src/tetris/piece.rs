@@ -5,8 +5,8 @@ use tetris::piece::rand::prelude::*;
 
 #[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Coord {
-    pub x: u8,
-    pub y: u8
+    pub x: i8,
+    pub y: i8
 }
 
 #[repr(C)]
@@ -43,92 +43,92 @@ struct J { state: State }
 struct L { state: State }
 
 impl I {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2, y: height+2 },
-                      Coord{ x: width/2, y: height+1 },
-                      Coord{ x: width/2, y: height },
-                      Coord{ x: width/2, y: height-0 });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2, y: -2 },
+                      Coord{ x: width/2, y: -1 },
+                      Coord{ x: width/2, y: 0 },
+                      Coord{ x: width/2, y: 1 });
         let state = State{ coords: coords, position: 0 };
         I{ state }
     }
 }
 
 impl O {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2, y: height+1 },
-                      Coord{ x: width/2+1, y: height+1 },
-                      Coord{ x: width/2, y: height },
-                      Coord{ x: width/2+1, y: height });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2, y: -1 },
+                      Coord{ x: width/2+1, y: -1 },
+                      Coord{ x: width/2, y: 0 },
+                      Coord{ x: width/2+1, y: 0 });
         let state = State{ coords: coords, position: 0 };
         O{ state }
     }
 }
 
 impl T {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2, y: height+1 },
-                      Coord{ x: width/2-1, y: height },
-                      Coord{ x: width/2, y: height },
-                      Coord{ x: width/2+1, y:height });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2, y: -1 },
+                      Coord{ x: width/2-1, y: 0 },
+                      Coord{ x: width/2, y: 0 },
+                      Coord{ x: width/2+1, y: 0 });
         let state = State{ coords: coords, position: 0 };
         T{ state }
     }
 }
 
 impl S {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2, y: height+1 },
-                      Coord{ x: width/2+1, y: height+1 },
-                      Coord{ x: width/2-1, y: height },
-                      Coord{ x: width/2, y: height });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2, y: -1 },
+                      Coord{ x: width/2+1, y: -1 },
+                      Coord{ x: width/2-1, y: 0 },
+                      Coord{ x: width/2, y: 0 });
         let state = State{ coords: coords, position: 0 };
         S{ state }
     }
 }
 
 impl Z {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2-1, y: height+1 },
-                      Coord{ x: width/2, y: height+1 },
-                      Coord{ x: width/2, y: height },
-                      Coord{ x: width/2+1, y: height });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2-1, y: -1 },
+                      Coord{ x: width/2, y: -1 },
+                      Coord{ x: width/2, y: 0 },
+                      Coord{ x: width/2+1, y: 0 });
         let state = State{ coords: coords, position: 0 };
         Z{ state }
     }
 }
 
 impl J {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2-1, y: height+1 },
-                      Coord{ x: width/2-1, y: height },
-                      Coord{ x: width/2, y: height },
-                      Coord{ x: width/2+1, y: height });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2-1, y: -1 },
+                      Coord{ x: width/2-1, y: 0 },
+                      Coord{ x: width/2, y: 0 },
+                      Coord{ x: width/2+1, y: 0 });
         let state = State{ coords: coords, position: 0 };
         J{ state }
     }
 }
 
 impl L {
-    fn new(height: u8, width: u8) -> Self {
-        let coords = (Coord{ x: width/2+1, y: height+1 },
-                      Coord{ x: width/2+1, y: height },
-                      Coord{ x: width/2, y: height },
-                      Coord{ x: width/2-1, y: height });
+    fn new(width: i8) -> Self {
+        let coords = (Coord{ x: width/2+1, y: -1 },
+                      Coord{ x: width/2+1, y: 0 },
+                      Coord{ x: width/2, y: 0 },
+                      Coord{ x: width/2-1, y: 0 });
         let state = State{ coords: coords, position: 0 };
         L{ state }
     }
 }
 
-pub fn random(height: u8, width: u8) -> Piece {
+pub fn random(width: i8) -> Piece {
     let r = rand::thread_rng().next_u32();
     match r % 7 {
-        0 => Piece{ i: I::new(height, width) },
-        1 => Piece{ o: O::new(height, width) },
-        2 => Piece{ t: T::new(height, width) },
-        3 => Piece{ s: S::new(height, width) },
-        4 => Piece{ z: Z::new(height, width) },
-        5 => Piece{ j: J::new(height, width) },
-        6 => Piece{ l: L::new(height, width) },
+        0 => Piece{ i: I::new(width) },
+        1 => Piece{ o: O::new(width) },
+        2 => Piece{ t: T::new(width) },
+        3 => Piece{ s: S::new(width) },
+        4 => Piece{ z: Z::new(width) },
+        5 => Piece{ j: J::new(width) },
+        6 => Piece{ l: L::new(width) },
         _ => panic!("unreachable random piece generation")
     }
 }
@@ -181,10 +181,10 @@ pub fn right(piece: Piece) -> Piece {
 
 fn _down(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
-    let coords = (Coord{ x: s1.x, y: s1.y-1 },
-                  Coord{ x: s2.x, y: s2.y-1 },
-                  Coord{ x: s3.x, y: s3.y-1 },
-                  Coord{ x: s4.x, y: s4.y-1 });
+    let coords = (Coord{ x: s1.x, y: s1.y+1 },
+                  Coord{ x: s2.x, y: s2.y+1 },
+                  Coord{ x: s3.x, y: s3.y+1 },
+                  Coord{ x: s4.x, y: s4.y+1 });
     State{ coords: coords, position: state.position }
 }
 
@@ -205,17 +205,17 @@ pub fn down(piece: Piece) -> Piece {
 fn rotate_i(i: I) -> Piece {
     let (s1, s2, s3, s4) = i.state.coords;
     if i.state.position == 0 {
-        let coords = (Coord{ x: s1.x-2, y: s1.y-2 },
-                      Coord{ x: s2.x-1, y: s2.y-1 },
+        let coords = (Coord{ x: s1.x-2, y: s1.y+2 },
+                      Coord{ x: s2.x-1, y: s2.y+1 },
                       s3,
-                      Coord{ x: s4.x+1, y: s4.y+1 });
+                      Coord{ x: s4.x+1, y: s4.y-1 });
         let state = State{ coords: coords, position: 0 };
         Piece{ i: I{ state } }
     } else {
-        let coords = (Coord{ x: s1.x+2, y: s1.y+2 },
-                      Coord{ x: s2.x+1, y: s2.y+1 },
+        let coords = (Coord{ x: s1.x+2, y: s1.y-2 },
+                      Coord{ x: s2.x+1, y: s2.y-1 },
                       s3,
-                      Coord{ x: s4.x-1, y: s4.y-1 });
+                      Coord{ x: s4.x-1, y: s4.y+1 });
         let state = State{ coords: coords, position: 1 };
         Piece{ i: I{ state } }
     }
@@ -225,34 +225,34 @@ fn rotate_t(t: T) -> Piece {
     let (s1, s2, s3, s4) = t.state.coords;
     match t.state.position {
         0 => {
-            let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
-                          Coord{ x: s2.x+1, y: s2.y-1 },
+            let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
+                          Coord{ x: s2.x+1, y: s2.y+1 },
                           s3,
-                          Coord{ x: s4.x-1, y: s4.y+1 });
+                          Coord{ x: s4.x-1, y: s4.y-1 });
             let state = State{ coords: coords, position: 1 };
             Piece{ t: T{ state } }
         },
         1 => {
-            let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
-                          Coord{ x: s2.x+1, y: s2.y+1 },
+            let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
+                          Coord{ x: s2.x+1, y: s2.y-1 },
                           s3,
-                          Coord{ x: s4.x-1, y: s4.y-1 });
+                          Coord{ x: s4.x-1, y: s4.y+1 });
             let state = State{ coords: coords, position: 2 };
             Piece{ t: T{ state } }
         },
         2 => {
-            let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
-                          Coord{ x: s2.x-1, y: s2.y+1 },
+            let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
+                          Coord{ x: s2.x-1, y: s2.y-1 },
                           s3,
-                          Coord{ x: s4.x+1, y: s4.y-1});
+                          Coord{ x: s4.x+1, y: s4.y+1});
             let state = State{ coords: coords, position: 3 };
             Piece{ t: T{ state } }
         },
         3 => {
-            let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
-                          Coord{ x: s2.x-1, y: s2.y-1 },
+            let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
+                          Coord{ x: s2.x-1, y: s2.y+1 },
                           s3,
-                          Coord{ x: s4.x+1, y: s4.y+1 });
+                          Coord{ x: s4.x+1, y: s4.y-1 });
             let state = State{ coords: coords, position: 0 };
             Piece{ t: T{ state } }
         }
@@ -264,16 +264,16 @@ fn rotate_s(s: S) -> Piece {
     let (s1, s2, s3, s4) = s.state.coords;
     if s.state.position == 0 {
         let coords = (s1,
-                      Coord{ x: s2.x-1, y: s2.y+1 },
+                      Coord{ x: s2.x-1, y: s2.y-1 },
                       Coord{ x: s3.x+1, y: s3.y },
-                      Coord{ x: s4.x+1, y: s4.y+1 });
+                      Coord{ x: s4.x+1, y: s4.y-1 });
         let state = State{ coords: coords, position: 1 };
         Piece{ s: S{ state } }
     } else {
         let coords = (s1,
-                      Coord{ x: s2.x+1, y: s2.y-1 },
+                      Coord{ x: s2.x+1, y: s2.y+1 },
                       Coord{ x: s3.x-1, y: s3.y },
-                      Coord{ x: s4.x-1, y: s4.y-1 });
+                      Coord{ x: s4.x-1, y: s4.y+1 });
         let state = State{ coords: coords, position: 0 };
         Piece{ s: S{ state } }
     }
@@ -282,16 +282,16 @@ fn rotate_s(s: S) -> Piece {
 fn rotate_z(z: Z) -> Piece {
     let (s1, s2, s3, s4) = z.state.coords;
     if z.state.position == 0 {
-        let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
+        let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
                       s2,
-                      Coord{ x: s3.x+1, y: s3.y-1 },
+                      Coord{ x: s3.x+1, y: s3.y+1 },
                       Coord{ x: s4.x-2, y: s4.y });
         let state = State{ coords: coords, position: 1 };
         Piece{ z: Z{ state } }
     } else {
-        let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
+        let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
                       s2,
-                      Coord{ x: s3.x-1, y: s3.y+1 },
+                      Coord{ x: s3.x-1, y: s3.y-1 },
                       Coord{ x: s4.x+1, y: s4.y });
         let state = State{ coords: coords, position: 0 };
         Piece{ z: Z{ state } }
@@ -302,34 +302,34 @@ fn rotate_j(j: J) -> Piece {
     let (s1, s2, s3, s4) = j.state.coords;
     match j.state.position {
         0 => {
-            let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
+            let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
                           s2,
-                          Coord{ x: s3.x-1, y: s3.y+1 },
-                          Coord{ x: s4.x-2, y: s4.y+2 });
+                          Coord{ x: s3.x-1, y: s3.y-1 },
+                          Coord{ x: s4.x-2, y: s4.y-2 });
             let state = State{ coords: coords, position: 1 };
             Piece{ j: J{ state } }
         },
         1 => {
-            let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
+            let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
                           s2,
-                          Coord{ x: s3.x-1, y: s3.y-1 },
-                          Coord{ x: s4.x-2, y: s4.y-2 });
+                          Coord{ x: s3.x-1, y: s3.y+1 },
+                          Coord{ x: s4.x-2, y: s4.y+2 });
             let state = State{ coords: coords, position: 2 };
             Piece{ j: J{ state } }
         },
         2 => {
-            let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
+            let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
                           s2,
-                          Coord{ x: s3.x+1, y: s3.y-1 },
-                          Coord{ x: s4.x+2, y: s4.y-2 });
+                          Coord{ x: s3.x+1, y: s3.y+1 },
+                          Coord{ x: s4.x+2, y: s4.y+2 });
             let state = State{ coords: coords, position: 3 };
             Piece{ j: J{ state } }
         },
         3 => {
-            let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
+            let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
                           s2,
-                          Coord{ x: s3.x+1, y: s3.y+1 },
-                          Coord{ x: s4.x+2, y: s4.y+2 });
+                          Coord{ x: s3.x+1, y: s3.y-1 },
+                          Coord{ x: s4.x+2, y: s4.y-2 });
             let state = State{ coords: coords, position: 0 };
             Piece{ j: J{ state } }
         }
@@ -341,34 +341,34 @@ fn rotate_l(l: L) -> Piece {
     let (s1, s2, s3, s4) = l.state.coords;
     match l.state.position {
         0 => {
-            let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
+            let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
                           s2,
-                          Coord{ x: s3.x+1, y: s3.y-1 },
-                          Coord{ x: s4.x+2, y: s4.y-2 });
+                          Coord{ x: s3.x+1, y: s3.y+1 },
+                          Coord{ x: s4.x+2, y: s4.y+2 });
             let state = State{ coords: coords, position: 1 };
             Piece{ l: L{ state } }
         },
         1 => {
-            let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
+            let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
                           s2,
-                          Coord{ x: s3.x+1, y: s3.y+1 },
-                          Coord{ x: s4.x+2, y: s4.y+2 });
+                          Coord{ x: s3.x+1, y: s3.y-1 },
+                          Coord{ x: s4.x+2, y: s4.y-2 });
             let state = State{ coords: coords, position: 2 };
             Piece{ l: L{ state } }
         },
         2 => {
-            let coords = (Coord{ x: s1.x+1, y: s1.y+1 },
+            let coords = (Coord{ x: s1.x+1, y: s1.y-1 },
                           s2,
-                          Coord{ x: s3.x-1, y: s3.y+1 },
-                          Coord{ x: s4.x-2, y: s4.y+2 });
+                          Coord{ x: s3.x-1, y: s3.y-1 },
+                          Coord{ x: s4.x-2, y: s4.y-2 });
             let state = State{ coords: coords, position: 3 };
             Piece{ l: L{ state } }
         },
         3 => {
-            let coords = (Coord{ x: s1.x-1, y: s1.y+1 },
+            let coords = (Coord{ x: s1.x-1, y: s1.y-1 },
                           s2,
-                          Coord{ x: s3.x-1, y: s3.y-1 },
-                          Coord{ x: s4.x-2, y: s4.y-2 });
+                          Coord{ x: s3.x-1, y: s3.y+1 },
+                          Coord{ x: s4.x-2, y: s4.y+2 });
             let state = State{ coords: coords, position: 0 };
             Piece{ l: L{ state } }
         }

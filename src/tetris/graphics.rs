@@ -30,7 +30,7 @@ pub fn next_piece(ctx: &mut Context, piece: Piece) -> GameResult<()> {
     graphics::rectangle(ctx, graphics::DrawMode::Fill, outer_box)?;
     graphics::set_color(ctx, INNER_BOX_COLOR.into())?;
     graphics::rectangle(ctx, graphics::DrawMode::Fill, inner_box)?;
-    draw_piece(ctx, piece, 610, 190)
+    draw_piece(ctx, piece, 500, 280)
 }
 
 pub fn grid(ctx: &mut Context, grid: &Grid) -> GameResult<()> {
@@ -55,11 +55,14 @@ fn draw_piece(ctx: &mut Context,
               piece: Piece,
               x_axis: i32,
               y_axis: i32) -> GameResult<()> {
-    graphics::set_color(ctx, piece_color(piece).into())?;
+    let color = piece_color(piece).into();
     for coord in into_set(piece) {
         let x = x_axis + ((coord.x as i32) * PIECE_BOX_SIZE);
-        let y = y_axis - ((coord.y as i32) * PIECE_BOX_SIZE);
-        let rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
+        let y = y_axis + ((coord.y as i32) * PIECE_BOX_SIZE);
+        graphics::set_color(ctx, OUTER_BOX_COLOR.into())?;
+        let outer_rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
+        graphics::set_color(ctx, color)?;
+        let rect = graphics::Rect::new_i32(x+2, y+2, PIECE_BOX_SIZE-4, PIECE_BOX_SIZE-4);
         graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
     }
     Ok(())

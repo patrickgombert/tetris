@@ -414,13 +414,13 @@ pub fn into_set(piece: Piece) -> HashSet<Coord> {
     }
 }
 
-const I_COLOR: [f32; 4] = [0.6, 0.8, 0.9, 0.8];
-const O_COLOR: [f32; 4] = [0.9, 0.8, 0.0, 0.8];
-const T_COLOR: [f32; 4] = [0.9, 0.2, 1.0, 0.8];
-const S_COLOR: [f32; 4] = [0.6, 0.8, 0.5, 0.8];
-const Z_COLOR: [f32; 4] = [0.7, 0.1, 0.2, 0.8];
-const J_COLOR: [f32; 4] = [0.4, 0.1, 1.0, 0.8];
-const L_COLOR: [f32; 4] = [0.9, 0.5, 0.0, 0.8];
+const I_COLOR: [f32; 4] = [0.6, 0.8, 0.9, 1.0];
+const O_COLOR: [f32; 4] = [0.9, 0.8, 0.0, 1.0];
+const T_COLOR: [f32; 4] = [0.9, 0.2, 1.0, 1.0];
+const S_COLOR: [f32; 4] = [0.6, 0.8, 0.5, 1.0];
+const Z_COLOR: [f32; 4] = [0.7, 0.1, 0.2, 1.0];
+const J_COLOR: [f32; 4] = [0.4, 0.1, 1.0, 1.0];
+const L_COLOR: [f32; 4] = [0.9, 0.5, 0.0, 1.0];
 
 pub fn piece_color(piece: Piece) -> [f32; 4] {
 	unsafe {

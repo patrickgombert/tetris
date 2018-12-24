@@ -4,7 +4,7 @@ use ggez::{graphics, Context, GameResult};
 use ggez::graphics::{Drawable, Font, Point2, Text};
 use std::collections::HashSet;
 use tetris::grid::Grid;
-use tetris::piece::{into_set, piece_color, Coord, Piece};
+use tetris::piece::{into_set, Coord, Piece};
 
 const PIECE_BOX_SIZE: i32 = 39;
 const OUTER_BOX_COLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.5];
@@ -30,7 +30,7 @@ pub fn next_piece(ctx: &mut Context, piece: Piece) -> GameResult<()> {
     graphics::rectangle(ctx, graphics::DrawMode::Fill, outer_box)?;
     graphics::set_color(ctx, INNER_BOX_COLOR.into())?;
     graphics::rectangle(ctx, graphics::DrawMode::Fill, inner_box)?;
-    draw_piece(ctx, piece, 500, 280)
+    draw_piece(ctx, piece, 500, 280, false)
 }
 
 pub fn grid(ctx: &mut Context, grid: &Grid) -> GameResult<()> {
@@ -48,22 +48,45 @@ pub fn grid(ctx: &mut Context, grid: &Grid) -> GameResult<()> {
             1.0
         )?;
     }
-    Ok(())
+    draw_piece(ctx, grid.piece, 80, 40, true)
 }
 
 fn draw_piece(ctx: &mut Context,
               piece: Piece,
               x_axis: i32,
-              y_axis: i32) -> GameResult<()> {
+              y_axis: i32,
+              truncate: bool) -> GameResult<()> {
     let color = piece_color(piece).into();
     for coord in into_set(piece) {
-        let x = x_axis + ((coord.x as i32) * PIECE_BOX_SIZE);
-        let y = y_axis + ((coord.y as i32) * PIECE_BOX_SIZE);
-        graphics::set_color(ctx, OUTER_BOX_COLOR.into())?;
-        let outer_rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
-        graphics::set_color(ctx, color)?;
-        let rect = graphics::Rect::new_i32(x+2, y+2, PIECE_BOX_SIZE-4, PIECE_BOX_SIZE-4);
-        graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
+        if !truncate || coord.y >= 0 {
+            let x = x_axis + ((coord.x as i32) * PIECE_BOX_SIZE);
+            let y = y_axis + ((coord.y as i32) * PIECE_BOX_SIZE);
+            graphics::set_color(ctx, OUTER_BOX_COLOR.into())?;
+            let outer_rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
+            graphics::set_color(ctx, color)?;
+            let rect = graphics::Rect::new_i32(x+2, y+2, PIECE_BOX_SIZE-4, PIECE_BOX_SIZE-4);
+            graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
+        }
     }
     Ok(())
+}
+
+const I_COLOR: [f32; 4] = [0.6, 0.8, 0.9, 1.0];
+const O_COLOR: [f32; 4] = [0.9, 0.8, 0.0, 1.0];
+const T_COLOR: [f32; 4] = [0.9, 0.2, 1.0, 1.0];
+const S_COLOR: [f32; 4] = [0.6, 0.8, 0.5, 1.0];
+const Z_COLOR: [f32; 4] = [0.7, 0.1, 0.2, 1.0];
+const J_COLOR: [f32; 4] = [0.4, 0.1, 1.0, 1.0];
+const L_COLOR: [f32; 4] = [0.9, 0.5, 0.0, 1.0];
+
+fn piece_color(piece: Piece) -> [f32; 4] {
+    match piece {
+        Piece::I(_) => I_COLOR,
+        Piece::O(_) => O_COLOR,
+        Piece::T(_) => T_COLOR,
+        Piece::S(_) => S_COLOR,
+        Piece::Z(_) => Z_COLOR,
+        Piece::J(_) => J_COLOR,
+        Piece::L(_) => L_COLOR
+    }
 }

@@ -7,7 +7,6 @@ use ggez::event::Keycode;
 use ggez::{event, graphics, Context, GameResult};
 use std::time::Instant;
 use tetris::grid::Grid;
-use tetris::graphics::*;
 
 struct GameState {
     score: u32,
@@ -22,13 +21,13 @@ impl GameState {
             score: 0,
             update_duration: 2000,
             last_update: Instant::now(),
-            grid: Grid::new(20, 10)
+            grid: Grid::new(20, 10),
         }
     }
 }
 
 impl event::EventHandler for GameState {
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
         let duration = Instant::now().duration_since(self.last_update);
         if duration.as_millis() > self.update_duration {
             let score = self.grid.tick();
@@ -40,12 +39,13 @@ impl event::EventHandler for GameState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
-		graphics::set_background_color(ctx, [0.4, 0.1, 0.1, 1.0].into());
+        graphics::set_background_color(ctx, [0.4, 0.1, 0.1, 1.0].into());
         tetris::graphics::score(ctx, self.score)?;
-		tetris::graphics::next_piece(ctx, self.grid.next_piece)?;
-		tetris::graphics::grid(ctx, &self.grid)?;
-		graphics::present(ctx);
-		ggez::timer::yield_now();
+        tetris::graphics::next_piece(ctx, self.grid.next_piece)?;
+        tetris::graphics::grid(ctx, &self.grid)?;
+        tetris::graphics::state(ctx, &self.grid.state)?;
+        graphics::present(ctx);
+        ggez::timer::yield_now();
         Ok(())
     }
 
@@ -54,15 +54,18 @@ impl event::EventHandler for GameState {
         _ctx: &mut Context,
         keycode: Keycode,
         _keymod: event::Mod,
-        _repeat: bool
+        _repeat: bool,
     ) {
         match keycode {
             Keycode::Up => self.grid.rotate(),
-            Keycode::Down => self.grid.down(),
+            Keycode::Down => {
+                self.grid.down();
+                ()
+            }
             Keycode::Left => self.grid.left(),
             Keycode::Right => self.grid.right(),
             Keycode::Space => self.grid.drop(),
-            _ => ()
+            _ => (),
         }
     }
 }
@@ -71,9 +74,10 @@ fn main() {
     let ctx = &mut ggez::ContextBuilder::new("tetris", "Patrick Gombert")
         .window_setup(ggez::conf::WindowSetup::default().title("Tetris"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(900, 900))
-        .build().unwrap();
+        .build()
+        .unwrap();
     match event::run(ctx, &mut GameState::new()) {
         Err(e) => println!("Error {}", e),
-        Ok(_) => ()
+        Ok(_) => (),
     }
 }

@@ -1,5 +1,5 @@
-use std::collections::HashSet;
-use tetris::piece::{down, left, into_set, random, right, rotate, Coord, Piece};
+use std::collections::{HashMap, HashSet};
+use tetris::piece::{down, into_set, left, random, right, rotate, Coord, Piece};
 
 // A grid is the set of occupied coords
 pub struct Grid {
@@ -7,7 +7,7 @@ pub struct Grid {
     width: i8,
     pub state: HashSet<Coord>,
     pub piece: Piece,
-    pub next_piece: Piece
+    pub next_piece: Piece,
 }
 
 impl Grid {
@@ -15,14 +15,20 @@ impl Grid {
         let state = HashSet::new();
         let piece = random(width);
         let next_piece = random(width);
-        Grid { height, width, state, piece, next_piece }
+        Grid {
+            height,
+            width,
+            state,
+            piece,
+            next_piece,
+        }
     }
 
     pub fn rotate(&mut self) {
         // TODO: check bounds
         let piece = self.piece.to_owned();
         let aspirational_piece = rotate(piece);
-        if self.state.intersection(&into_set(piece)).count() == 0 {
+        if self.state.intersection(&into_set(&piece)).count() == 0 {
             self.piece = aspirational_piece;
         }
     }
@@ -30,9 +36,10 @@ impl Grid {
     pub fn left(&mut self) {
         let piece = self.piece.to_owned();
         let aspirational_piece = left(piece);
-        let aspirational_coords = into_set(aspirational_piece);
-        if aspirational_coords.iter().all(|c| c.x >= 0) &&
-            self.state.intersection(&aspirational_coords).count() == 0 {
+        let aspirational_coords = into_set(&aspirational_piece);
+        if aspirational_coords.iter().all(|c| c.x >= 0)
+            && self.state.intersection(&aspirational_coords).count() == 0
+        {
             self.piece = aspirational_piece;
         }
     }
@@ -40,45 +47,62 @@ impl Grid {
     pub fn right(&mut self) {
         let piece = self.piece.to_owned();
         let aspirational_piece = right(piece);
-        let aspirational_coords = into_set(aspirational_piece);
-        if aspirational_coords.iter().all(|c| c.x < self.width) &&
-            self.state.intersection(&aspirational_coords).count() == 0 {
+        let aspirational_coords = into_set(&aspirational_piece);
+        if aspirational_coords.iter().all(|c| c.x < self.width)
+            && self.state.intersection(&aspirational_coords).count() == 0
+        {
             self.piece = aspirational_piece;
         }
     }
 
-    pub fn down(&mut self) {
+    pub fn down(&mut self) -> bool {
         let piece = self.piece.to_owned();
         let aspirational_piece = down(piece);
-        let aspirational_coords = into_set(aspirational_piece);
-        if aspirational_coords.iter().all(|c| c.y >= 0) &&
-            self.state.intersection(&aspirational_coords).count() == 0 {
+        let aspirational_coords = into_set(&aspirational_piece);
+        let ret = aspirational_coords.iter().all(|c| c.y < self.height)
+            && self.state.intersection(&aspirational_coords).count() == 0;
+        if ret {
             self.piece = aspirational_piece;
         }
+        ret
     }
 
     pub fn drop(&mut self) {
-        let mut current_coords = into_set(self.piece.to_owned());
+        let mut current_coords = into_set(&self.piece);
         self.down();
-        let mut next_coords = into_set(self.piece.to_owned());
+        let mut next_coords = into_set(&self.piece);
         while current_coords != next_coords {
             current_coords = next_coords;
             self.down();
-            next_coords = into_set(self.piece.to_owned());
+            next_coords = into_set(&self.piece);
         }
     }
 
     pub fn tick(&mut self) -> u32 {
-        let current_coords = into_set(self.piece.to_owned());
-        self.down();
-        let next_coords = into_set(self.piece.to_owned());
-        if current_coords == next_coords {
+        if self.down() {
             // check for row clears
             // move piece coords into grid state
             // move next piece to piece and make new next
-            0
-        } else {
-            0
+            let next_coords = into_set(&self.piece);
+            let next_state = self.state.to_owned().union(&next_coords).to_owned();
+            let line_counts = self
+                .state
+                .to_owned()
+                .iter()
+                .fold(HashMap::new(), |mut acc, i| {
+                    let v = acc.get(&i.y).unwrap_or(&0).to_owned();
+                    acc.insert(i.y, v + 1);
+                    acc
+                })
+                .to_owned();
+            let dead_lines = line_counts
+                .iter()
+                .filter(|(_, count)| **count == self.width)
+                .map(|(line, _)| line);
+            self.state = next_state.map(|c| *c).collect();
+            self.piece = self.next_piece;
+            self.next_piece = random(self.width);
         }
+        0
     }
 }

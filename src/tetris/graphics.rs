@@ -1,7 +1,7 @@
 extern crate ggez;
 
-use ggez::{graphics, Context, GameResult};
 use ggez::graphics::{Drawable, Font, Point2, Text};
+use ggez::{graphics, Context, GameResult};
 use std::collections::HashSet;
 use tetris::grid::Grid;
 use tetris::piece::{into_set, Coord, Piece};
@@ -9,6 +9,7 @@ use tetris::piece::{into_set, Coord, Piece};
 const PIECE_BOX_SIZE: i32 = 39;
 const OUTER_BOX_COLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.5];
 const INNER_BOX_COLOR: [f32; 4] = [1.0, 1.0, 1.0, 0.6];
+const DEAD_BOX_COLOR: [f32; 4] = [0.9, 0.9, 0.9, 1.0];
 
 pub fn score(ctx: &mut Context, score: u32) -> GameResult<()> {
     let outer_box = graphics::Rect::new_i32(600, 40, 200, 50);
@@ -45,26 +46,44 @@ pub fn grid(ctx: &mut Context, grid: &Grid) -> GameResult<()> {
         graphics::line(
             ctx,
             &[Point2::new(i as f32, 40.0), Point2::new(i as f32, 830.0)],
-            1.0
+            1.0,
         )?;
     }
     draw_piece(ctx, grid.piece, 80, 40, true)
 }
 
-fn draw_piece(ctx: &mut Context,
-              piece: Piece,
-              x_axis: i32,
-              y_axis: i32,
-              truncate: bool) -> GameResult<()> {
+pub fn state(ctx: &mut Context, state: &HashSet<Coord>) -> GameResult<()> {
+    for piece in state {
+        let x = 80 + (piece.x as i32) * PIECE_BOX_SIZE;
+        let y = 40 + (piece.y as i32) * PIECE_BOX_SIZE;
+        let outer_rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
+        graphics::set_color(ctx, OUTER_BOX_COLOR.into())?;
+        graphics::rectangle(ctx, graphics::DrawMode::Fill, outer_rect)?;
+        let rect = graphics::Rect::new_i32(x + 2, y + 2, PIECE_BOX_SIZE - 4, PIECE_BOX_SIZE - 4);
+        graphics::set_color(ctx, DEAD_BOX_COLOR.into())?;
+        graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
+    }
+    Ok(())
+}
+
+fn draw_piece(
+    ctx: &mut Context,
+    piece: Piece,
+    x_axis: i32,
+    y_axis: i32,
+    truncate: bool,
+) -> GameResult<()> {
     let color = piece_color(piece).into();
-    for coord in into_set(piece) {
+    for coord in into_set(&piece) {
         if !truncate || coord.y >= 0 {
             let x = x_axis + ((coord.x as i32) * PIECE_BOX_SIZE);
             let y = y_axis + ((coord.y as i32) * PIECE_BOX_SIZE);
             graphics::set_color(ctx, OUTER_BOX_COLOR.into())?;
             let outer_rect = graphics::Rect::new_i32(x, y, PIECE_BOX_SIZE, PIECE_BOX_SIZE);
+            graphics::rectangle(ctx, graphics::DrawMode::Fill, outer_rect)?;
             graphics::set_color(ctx, color)?;
-            let rect = graphics::Rect::new_i32(x+2, y+2, PIECE_BOX_SIZE-4, PIECE_BOX_SIZE-4);
+            let rect =
+                graphics::Rect::new_i32(x + 2, y + 2, PIECE_BOX_SIZE - 4, PIECE_BOX_SIZE - 4);
             graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
         }
     }
@@ -87,6 +106,6 @@ fn piece_color(piece: Piece) -> [f32; 4] {
         Piece::S(_) => S_COLOR,
         Piece::Z(_) => Z_COLOR,
         Piece::J(_) => J_COLOR,
-        Piece::L(_) => L_COLOR
+        Piece::L(_) => L_COLOR,
     }
 }

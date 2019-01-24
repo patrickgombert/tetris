@@ -1,5 +1,3 @@
-pub mod grid;
 pub mod graphics;
+pub mod grid;
 mod piece;
-
-use tetris::grid::Grid;

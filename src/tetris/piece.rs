@@ -318,16 +318,16 @@ fn rotate_i(state: State) -> State {
         let coords = (
             Coord {
                 x: s1.x - 2,
-                y: s1.y + 2,
+                y: s1.y - 2,
             },
             Coord {
                 x: s2.x - 1,
-                y: s2.y + 1,
+                y: s2.y - 1,
             },
             s3,
             Coord {
                 x: s4.x + 1,
-                y: s4.y - 1,
+                y: s4.y + 1,
             },
         );
         State {
@@ -499,11 +499,11 @@ fn rotate_z(state: State) -> State {
         let coords = (
             Coord {
                 x: s1.x + 1,
-                y: s1.y - 1,
+                y: s1.y + 1,
             },
             s2,
             Coord {
-                x: s3.x + 1,
+                x: s3.x - 1,
                 y: s3.y + 1,
             },
             Coord {
@@ -519,15 +519,15 @@ fn rotate_z(state: State) -> State {
         let coords = (
             Coord {
                 x: s1.x - 1,
-                y: s1.y + 1,
+                y: s1.y - 1,
             },
             s2,
             Coord {
-                x: s3.x - 1,
+                x: s3.x + 1,
                 y: s3.y - 1,
             },
             Coord {
-                x: s4.x + 1,
+                x: s4.x + 2,
                 y: s4.y,
             },
         );

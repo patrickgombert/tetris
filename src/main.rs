@@ -1,4 +1,3 @@
-#![feature(duration_as_u128)]
 extern crate ggez;
 
 mod tetris;
@@ -10,6 +9,7 @@ use tetris::grid::Grid;
 
 struct GameState {
     score: u32,
+    level: u32,
     update_duration: u128,
     last_update: Instant,
     grid: Grid,
@@ -19,6 +19,7 @@ impl GameState {
     fn new() -> Self {
         GameState {
             score: 0,
+            level: 0,
             update_duration: 2000,
             last_update: Instant::now(),
             grid: Grid::new(20, 10),
@@ -30,8 +31,16 @@ impl event::EventHandler for GameState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
         let duration = Instant::now().duration_since(self.last_update);
         if duration.as_millis() > self.update_duration {
-            let score = self.grid.tick();
-            self.score = self.score + score;
+            let dead_lines = self.grid.tick();
+            let line_score = match dead_lines {
+                0 => 0,
+                1 => 40 * (self.level + 1),
+                2 => 100 * (self.level + 1),
+                3 => 300 * (self.level + 1),
+                4 => 1400 * (self.level + 1),
+                _ => panic!("cleared more than 4 lines"),
+            };
+            self.score = self.score + line_score;
             self.last_update = Instant::now();
         }
         Ok(())

@@ -25,11 +25,17 @@ impl Grid {
     }
 
     pub fn rotate(&mut self) {
-        // TODO: check bounds
         let piece = self.piece.to_owned();
         let aspirational_piece = rotate(piece);
+        let aspirational_set = into_set(&piece);
         if self.state.intersection(&into_set(&piece)).count() == 0 {
             self.piece = aspirational_piece;
+            if aspirational_set.iter().any(|coord| coord.x < 0) {
+                self.right();
+            }
+            if aspirational_set.iter().any(|coord| coord.x > self.width) {
+                self.left();
+            }
         }
     }
 
@@ -78,30 +84,25 @@ impl Grid {
         }
     }
 
-    pub fn tick(&mut self) -> u32 {
-        if self.down() {
-            // check for row clears
-            // move piece coords into grid state
-            // move next piece to piece and make new next
+    pub fn tick(&mut self) -> u8 {
+        if !self.down() {
             let next_coords = into_set(&self.piece);
-            let next_state = self.state.to_owned().union(&next_coords).to_owned();
-            let line_counts = self
-                .state
-                .to_owned()
-                .iter()
-                .fold(HashMap::new(), |mut acc, i| {
-                    let v = acc.get(&i.y).unwrap_or(&0).to_owned();
-                    acc.insert(i.y, v + 1);
-                    acc
-                })
-                .to_owned();
-            let dead_lines = line_counts
+            let next_state: HashSet<Coord> =
+                self.state.union(&next_coords).map(|coord| *coord).collect();
+            let line_counts = next_state.iter().fold(HashMap::new(), |mut acc, i| {
+                let v = acc.get(&i.y).unwrap_or(&0).to_owned();
+                acc.insert(i.y, v + 1);
+                acc
+            });
+            let mut dead_lines: Vec<&i8> = line_counts
                 .iter()
                 .filter(|(_, count)| **count == self.width)
-                .map(|(line, _)| line);
-            self.state = next_state.map(|c| *c).collect();
+                .map(|(line, _)| line)
+                .collect();
+            self.state = next_state;
             self.piece = self.next_piece;
             self.next_piece = random(self.width);
+            dead_lines.len();
         }
         0
     }

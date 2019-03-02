@@ -318,16 +318,16 @@ fn rotate_i(state: State) -> State {
         let coords = (
             Coord {
                 x: s1.x - 2,
-                y: s1.y - 2,
+                y: s1.y + 2,
             },
             Coord {
                 x: s2.x - 1,
-                y: s2.y - 1,
+                y: s2.y + 1,
             },
             s3,
             Coord {
                 x: s4.x + 1,
-                y: s4.y + 1,
+                y: s4.y - 1,
             },
         );
         State {
@@ -357,7 +357,7 @@ fn rotate_i(state: State) -> State {
     }
 }
 
-fn rotate_t(state: State) -> State {
+fn rotate_right_t(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     match state.position {
         0 => {
@@ -452,18 +452,18 @@ fn rotate_s(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     if state.position == 0 {
         let coords = (
-            s1,
             Coord {
-                x: s2.x - 1,
-                y: s2.y - 1,
+                x: s1.x - 1,
+                y: s1.y - 1,
             },
+            s2,
             Coord {
                 x: s3.x + 1,
-                y: s3.y,
+                y: s3.y - 1,
             },
             Coord {
-                x: s4.x + 1,
-                y: s4.y - 1,
+                x: s4.x + 2,
+                y: s4.y,
             },
         );
         State {
@@ -472,18 +472,18 @@ fn rotate_s(state: State) -> State {
         }
     } else {
         let coords = (
-            s1,
             Coord {
-                x: s2.x + 1,
-                y: s2.y + 1,
+                x: s1.x + 1,
+                y: s1.y + 1,
             },
+            s2,
             Coord {
                 x: s3.x - 1,
-                y: s3.y,
+                y: s3.y + 1,
             },
             Coord {
-                x: s4.x - 1,
-                y: s4.y + 1,
+                x: s4.x - 2,
+                y: s4.y,
             },
         );
         State {
@@ -538,7 +538,7 @@ fn rotate_z(state: State) -> State {
     }
 }
 
-fn rotate_j(state: State) -> State {
+fn rotate_right_j(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     match state.position {
         0 => {
@@ -629,7 +629,7 @@ fn rotate_j(state: State) -> State {
     }
 }
 
-fn rotate_l(state: State) -> State {
+fn rotate_right_l(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     match state.position {
         0 => {
@@ -720,15 +720,15 @@ fn rotate_l(state: State) -> State {
     }
 }
 
-pub fn rotate(piece: Piece) -> Piece {
+pub fn rotate_right(piece: Piece) -> Piece {
     match piece {
         Piece::I(state) => Piece::I(rotate_i(state)),
         Piece::O(state) => Piece::O(state),
-        Piece::T(state) => Piece::T(rotate_t(state)),
+        Piece::T(state) => Piece::T(rotate_right_t(state)),
         Piece::S(state) => Piece::S(rotate_s(state)),
         Piece::Z(state) => Piece::Z(rotate_z(state)),
-        Piece::J(state) => Piece::J(rotate_j(state)),
-        Piece::L(state) => Piece::L(rotate_l(state)),
+        Piece::J(state) => Piece::J(rotate_right_j(state)),
+        Piece::L(state) => Piece::L(rotate_right_l(state)),
     }
 }
 

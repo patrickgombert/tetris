@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use tetris::piece::{down, into_set, left, random, right, rotate, Coord, Piece};
+use tetris::piece::{down, into_set, left, random, right, rotate_right, Coord, Piece};
 
 // A grid is the set of occupied coords
 pub struct Grid {
@@ -24,9 +24,9 @@ impl Grid {
         }
     }
 
-    pub fn rotate(&mut self) {
+    pub fn rotate_right(&mut self) {
         let piece = self.piece.to_owned();
-        let aspirational_piece = rotate(piece);
+        let aspirational_piece = rotate_right(piece);
         let aspirational_set = into_set(&piece);
         if self.state.intersection(&into_set(&piece)).count() == 0 {
             self.piece = aspirational_piece;

@@ -94,6 +94,11 @@ fn new_t(width: i8) -> Piece {
 
 fn new_s(width: i8) -> Piece {
     let coords = (
+        Coord { x: width / 2, y: 0 },
+        Coord {
+            x: width / 2 - 1,
+            y: 0,
+        },
         Coord {
             x: width / 2,
             y: -1,
@@ -102,11 +107,6 @@ fn new_s(width: i8) -> Piece {
             x: width / 2 + 1,
             y: -1,
         },
-        Coord {
-            x: width / 2 - 1,
-            y: 0,
-        },
-        Coord { x: width / 2, y: 0 },
     );
     let state = State {
         coords: coords,
@@ -117,18 +117,18 @@ fn new_s(width: i8) -> Piece {
 
 fn new_z(width: i8) -> Piece {
     let coords = (
+        Coord { x: width / 2, y: 0 },
         Coord {
-            x: width / 2 - 1,
-            y: -1,
+            x: width / 2 + 1,
+            y: 0,
         },
         Coord {
             x: width / 2,
             y: -1,
         },
-        Coord { x: width / 2, y: 0 },
         Coord {
-            x: width / 2 + 1,
-            y: 0,
+            x: width / 2 - 1,
+            y: -1,
         },
     );
     let state = State {
@@ -140,18 +140,18 @@ fn new_z(width: i8) -> Piece {
 
 fn new_j(width: i8) -> Piece {
     let coords = (
+        Coord { x: width / 2, y: 0 },
         Coord {
             x: width / 2 - 1,
+            y: 0,
+        },
+        Coord {
+            x: width / 2,
             y: -1,
         },
         Coord {
-            x: width / 2 - 1,
-            y: 0,
-        },
-        Coord { x: width / 2, y: 0 },
-        Coord {
-            x: width / 2 + 1,
-            y: 0,
+            x: width / 2,
+            y: -2,
         },
     );
     let state = State {
@@ -163,18 +163,18 @@ fn new_j(width: i8) -> Piece {
 
 fn new_l(width: i8) -> Piece {
     let coords = (
+        Coord { x: width / 2, y: 0 },
         Coord {
             x: width / 2 + 1,
+            y: 0,
+        },
+        Coord {
+            x: width / 2,
             y: -1,
         },
         Coord {
-            x: width / 2 + 1,
-            y: 0,
-        },
-        Coord { x: width / 2, y: 0 },
-        Coord {
-            x: width / 2 - 1,
-            y: 0,
+            x: width / 2,
+            y: -2,
         },
     );
     let state = State {
@@ -332,7 +332,7 @@ fn rotate_i(state: State) -> State {
         );
         State {
             coords: coords,
-            position: 0,
+            position: 1,
         }
     } else {
         let coords = (
@@ -352,12 +352,12 @@ fn rotate_i(state: State) -> State {
         );
         State {
             coords: coords,
-            position: 1,
+            position: 0,
         }
     }
 }
 
-fn rotate_right_t(state: State) -> State {
+fn rotate_left_t(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     match state.position {
         0 => {
@@ -378,52 +378,10 @@ fn rotate_right_t(state: State) -> State {
             );
             State {
                 coords: coords,
-                position: 1,
-            }
-        }
-        1 => {
-            let coords = (
-                Coord {
-                    x: s1.x + 1,
-                    y: s1.y + 1,
-                },
-                Coord {
-                    x: s2.x + 1,
-                    y: s2.y - 1,
-                },
-                s3,
-                Coord {
-                    x: s4.x - 1,
-                    y: s4.y + 1,
-                },
-            );
-            State {
-                coords: coords,
-                position: 2,
-            }
-        }
-        2 => {
-            let coords = (
-                Coord {
-                    x: s1.x + 1,
-                    y: s1.y - 1,
-                },
-                Coord {
-                    x: s2.x - 1,
-                    y: s2.y - 1,
-                },
-                s3,
-                Coord {
-                    x: s4.x + 1,
-                    y: s4.y + 1,
-                },
-            );
-            State {
-                coords: coords,
                 position: 3,
             }
         }
-        3 => {
+        1 => {
             let coords = (
                 Coord {
                     x: s1.x - 1,
@@ -444,6 +402,139 @@ fn rotate_right_t(state: State) -> State {
                 position: 0,
             }
         }
+        2 => {
+            let coords = (
+                Coord {
+                    x: s1.x + 1,
+                    y: s1.y - 1,
+                },
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y - 1,
+                },
+                s3,
+                Coord {
+                    x: s4.x + 1,
+                    y: s4.y + 1,
+                },
+            );
+            State {
+                coords: coords,
+                position: 1,
+            }
+        }
+        3 => {
+            let coords = (
+                Coord {
+                    x: s1.x + 1,
+                    y: s1.y + 1,
+                },
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y - 1,
+                },
+                s3,
+                Coord {
+                    x: s4.x - 1,
+                    y: s4.y + 1,
+                },
+            );
+            State {
+                coords: coords,
+                position: 2,
+            }
+        }
+        _ => panic!("Invalid T position"),
+    }
+}
+
+fn rotate_right_t(state: State) -> State {
+    let (s1, s2, s3, s4) = state.coords;
+    match state.position {
+        0 => {
+            let coords = (
+                Coord {
+                    x: s1.x + 1,
+                    y: s1.y + 1,
+                },
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y - 1,
+                },
+                s3,
+                Coord {
+                    x: s4.x - 1,
+                    y: s4.y + 1,
+                },
+            );
+            State {
+                coords: coords,
+                position: 1,
+            }
+        }
+        1 => {
+            let coords = (
+                Coord {
+                    x: s1.x - 1,
+                    y: s1.y + 1,
+                },
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y + 1,
+                },
+                s3,
+                Coord {
+                    x: s4.x - 1,
+                    y: s4.y - 1,
+                },
+            );
+            State {
+                coords: coords,
+                position: 2,
+            }
+        }
+        2 => {
+            let coords = (
+                Coord {
+                    x: s1.x - 1,
+                    y: s1.y - 1,
+                },
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y + 1,
+                },
+                s3,
+                Coord {
+                    x: s4.x + 1,
+                    y: s4.y - 1,
+                },
+            );
+            State {
+                coords: coords,
+                position: 3,
+            }
+        }
+        3 => {
+            let coords = (
+                Coord {
+                    x: s1.x + 1,
+                    y: s1.y - 1,
+                },
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y - 1,
+                },
+                s3,
+                Coord {
+                    x: s4.x + 1,
+                    y: s4.y + 1,
+                },
+            );
+            State {
+                coords: coords,
+                position: 0,
+            }
+        }
         _ => panic!("Invalid T position"),
     }
 }
@@ -452,17 +543,17 @@ fn rotate_s(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     if state.position == 0 {
         let coords = (
+            s1,
             Coord {
-                x: s1.x - 1,
-                y: s1.y - 1,
-            },
-            s2,
-            Coord {
-                x: s3.x + 1,
-                y: s3.y - 1,
+                x: s2.x + 1,
+                y: s2.y + 1,
             },
             Coord {
-                x: s4.x + 2,
+                x: s3.x - 1,
+                y: s3.y + 1,
+            },
+            Coord {
+                x: s4.x - 2,
                 y: s4.y,
             },
         );
@@ -472,17 +563,17 @@ fn rotate_s(state: State) -> State {
         }
     } else {
         let coords = (
+            s1,
             Coord {
-                x: s1.x + 1,
-                y: s1.y + 1,
-            },
-            s2,
-            Coord {
-                x: s3.x - 1,
-                y: s3.y + 1,
+                x: s2.x - 1,
+                y: s2.y - 1,
             },
             Coord {
-                x: s4.x - 2,
+                x: s3.x + 1,
+                y: s3.y - 1,
+            },
+            Coord {
+                x: s4.x + 2,
                 y: s4.y,
             },
         );
@@ -497,17 +588,17 @@ fn rotate_z(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     if state.position == 0 {
         let coords = (
+            s1,
             Coord {
-                x: s1.x + 1,
-                y: s1.y + 1,
+                x: s2.x - 1,
+                y: s2.y + 1,
             },
-            s2,
             Coord {
-                x: s3.x - 1,
+                x: s3.x + 1,
                 y: s3.y + 1,
             },
             Coord {
-                x: s4.x - 2,
+                x: s4.x + 2,
                 y: s4.y,
             },
         );
@@ -517,17 +608,17 @@ fn rotate_z(state: State) -> State {
         }
     } else {
         let coords = (
+            s1,
             Coord {
-                x: s1.x - 1,
-                y: s1.y - 1,
+                x: s2.x + 1,
+                y: s2.y - 1,
             },
-            s2,
             Coord {
-                x: s3.x + 1,
+                x: s3.x - 1,
                 y: s3.y - 1,
             },
             Coord {
-                x: s4.x + 2,
+                x: s4.x - 2,
                 y: s4.y,
             },
         );
@@ -538,16 +629,37 @@ fn rotate_z(state: State) -> State {
     }
 }
 
-fn rotate_right_j(state: State) -> State {
+fn rotate_left_j(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     match state.position {
         0 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x - 1,
-                    y: s1.y + 1,
+                    x: s2.x + 1,
+                    y: s2.y + 1,
                 },
-                s2,
+                Coord {
+                    x: s3.x - 1,
+                    y: s3.y + 1,
+                },
+                Coord {
+                    x: s4.x - 2,
+                    y: s4.y + 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 3,
+            }
+        }
+        1 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y + 1,
+                },
                 Coord {
                     x: s3.x - 1,
                     y: s3.y - 1,
@@ -559,16 +671,86 @@ fn rotate_right_j(state: State) -> State {
             );
             State {
                 coords: coords,
+                position: 0,
+            }
+        }
+        2 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y - 1,
+                },
+                Coord {
+                    x: s3.x + 1,
+                    y: s3.y - 1,
+                },
+                Coord {
+                    x: s4.x + 2,
+                    y: s4.y - 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 1,
+            }
+        }
+        3 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y - 1,
+                },
+                Coord {
+                    x: s3.x + 1,
+                    y: s3.y + 1,
+                },
+                Coord {
+                    x: s4.x + 2,
+                    y: s4.y + 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 2,
+            }
+        }
+        _ => panic!("Invalid J position"),
+    }
+}
+
+fn rotate_right_j(state: State) -> State {
+    let (s1, s2, s3, s4) = state.coords;
+    match state.position {
+        0 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y - 1,
+                },
+                Coord {
+                    x: s3.x + 1,
+                    y: s3.y + 1,
+                },
+                Coord {
+                    x: s4.x + 2,
+                    y: s4.y + 2,
+                },
+            );
+            State {
+                coords: coords,
                 position: 1,
             }
         }
         1 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x + 1,
-                    y: s1.y + 1,
+                    x: s2.x + 1,
+                    y: s2.y + 1,
                 },
-                s2,
                 Coord {
                     x: s3.x - 1,
                     y: s3.y + 1,
@@ -585,18 +767,18 @@ fn rotate_right_j(state: State) -> State {
         }
         2 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x + 1,
-                    y: s1.y - 1,
-                },
-                s2,
-                Coord {
-                    x: s3.x + 1,
-                    y: s3.y + 1,
+                    x: s2.x - 1,
+                    y: s2.y + 1,
                 },
                 Coord {
-                    x: s4.x + 2,
-                    y: s4.y + 2,
+                    x: s3.x - 1,
+                    y: s3.y - 1,
+                },
+                Coord {
+                    x: s4.x - 2,
+                    y: s4.y - 2,
                 },
             );
             State {
@@ -606,11 +788,11 @@ fn rotate_right_j(state: State) -> State {
         }
         3 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x - 1,
-                    y: s1.y - 1,
+                    x: s2.x - 1,
+                    y: s2.y - 1,
                 },
-                s2,
                 Coord {
                     x: s3.x + 1,
                     y: s3.y - 1,
@@ -629,16 +811,107 @@ fn rotate_right_j(state: State) -> State {
     }
 }
 
+fn rotate_left_l(state: State) -> State {
+    let (s1, s2, s3, s4) = state.coords;
+    match state.position {
+        0 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y - 1,
+                },
+                Coord {
+                    x: s3.x - 1,
+                    y: s3.y + 1,
+                },
+                Coord {
+                    x: s4.x - 2,
+                    y: s4.y + 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 3,
+            }
+        }
+        1 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y - 1,
+                },
+                Coord {
+                    x: s3.x - 1,
+                    y: s3.y - 1,
+                },
+                Coord {
+                    x: s4.x - 2,
+                    y: s4.y - 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 0,
+            }
+        }
+        2 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x + 1,
+                    y: s2.y + 1,
+                },
+                Coord {
+                    x: s3.x + 1,
+                    y: s3.y - 1,
+                },
+                Coord {
+                    x: s4.x + 2,
+                    y: s4.y - 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 1,
+            }
+        }
+        3 => {
+            let coords = (
+                s1,
+                Coord {
+                    x: s2.x - 1,
+                    y: s2.y + 1,
+                },
+                Coord {
+                    x: s3.x + 1,
+                    y: s3.y + 1,
+                },
+                Coord {
+                    x: s4.x + 2,
+                    y: s4.y + 2,
+                },
+            );
+            State {
+                coords: coords,
+                position: 2,
+            }
+        }
+        _ => panic!("Invalid L position"),
+    }
+}
+
 fn rotate_right_l(state: State) -> State {
     let (s1, s2, s3, s4) = state.coords;
     match state.position {
         0 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x - 1,
-                    y: s1.y + 1,
+                    x: s2.x - 1,
+                    y: s2.y + 1,
                 },
-                s2,
                 Coord {
                     x: s3.x + 1,
                     y: s3.y + 1,
@@ -655,18 +928,18 @@ fn rotate_right_l(state: State) -> State {
         }
         1 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x + 1,
-                    y: s1.y + 1,
-                },
-                s2,
-                Coord {
-                    x: s3.x + 1,
-                    y: s3.y - 1,
+                    x: s2.x - 1,
+                    y: s2.y - 1,
                 },
                 Coord {
-                    x: s4.x + 2,
-                    y: s4.y - 2,
+                    x: s3.x - 1,
+                    y: s3.y + 1,
+                },
+                Coord {
+                    x: s4.x - 2,
+                    y: s4.y + 2,
                 },
             );
             State {
@@ -676,11 +949,11 @@ fn rotate_right_l(state: State) -> State {
         }
         2 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x + 1,
-                    y: s1.y - 1,
+                    x: s2.x + 1,
+                    y: s2.y - 1,
                 },
-                s2,
                 Coord {
                     x: s3.x - 1,
                     y: s3.y - 1,
@@ -697,18 +970,18 @@ fn rotate_right_l(state: State) -> State {
         }
         3 => {
             let coords = (
+                s1,
                 Coord {
-                    x: s1.x - 1,
-                    y: s1.y - 1,
-                },
-                s2,
-                Coord {
-                    x: s3.x - 1,
-                    y: s3.y + 1,
+                    x: s2.x + 1,
+                    y: s2.y + 1,
                 },
                 Coord {
-                    x: s4.x - 2,
-                    y: s4.y + 2,
+                    x: s3.x + 1,
+                    y: s3.y - 1,
+                },
+                Coord {
+                    x: s4.x + 2,
+                    y: s4.y - 2,
                 },
             );
             State {
@@ -717,6 +990,18 @@ fn rotate_right_l(state: State) -> State {
             }
         }
         _ => panic!("Invalid L position"),
+    }
+}
+
+pub fn rotate_left(piece: Piece) -> Piece {
+    match piece {
+        Piece::I(state) => Piece::I(rotate_i(state)),
+        Piece::O(state) => Piece::O(state),
+        Piece::T(state) => Piece::T(rotate_left_t(state)),
+        Piece::S(state) => Piece::S(rotate_s(state)),
+        Piece::Z(state) => Piece::Z(rotate_z(state)),
+        Piece::J(state) => Piece::J(rotate_left_j(state)),
+        Piece::L(state) => Piece::L(rotate_left_l(state)),
     }
 }
 
@@ -751,5 +1036,545 @@ pub fn into_set(piece: &Piece) -> HashSet<Coord> {
         Piece::Z(state) => _into_set(state),
         Piece::J(state) => _into_set(state),
         Piece::L(state) => _into_set(state),
+    }
+}
+
+#[cfg(test)]
+mod i_tests {
+    use super::*;
+
+    #[test]
+    fn rotate_position_0() {
+        let i = new_i(10);
+        if let Piece::I(rotated_state) = rotate_left(i) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 3);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 6);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_position_1() {
+        let i = rotate_left(new_i(10));
+        if let Piece::I(rotated_state) = rotate_left(i) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, -2);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 1);
+        }
+    }
+}
+
+#[cfg(test)]
+mod t_tests {
+    use super::*;
+
+    #[test]
+    fn rotate_left_position_0() {
+        let t = new_t(10);
+        if let Piece::T(rotated_state) = rotate_left(t) {
+            assert_eq!(3, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 4);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, -1);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_3() {
+        let t = rotate_left(new_t(10));
+        if let Piece::T(rotated_state) = rotate_left(t) {
+            assert_eq!(2, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 1);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 4);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_2() {
+        let t = rotate_left(rotate_left(new_t(10)));
+        if let Piece::T(rotated_state) = rotate_left(t) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 6);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 1);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_1() {
+        let t = rotate_left(rotate_left(rotate_left(new_t(10))));
+        if let Piece::T(rotated_state) = rotate_left(t) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, -1);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 6);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_0() {
+        let t = new_t(10);
+        if let Piece::T(rotated_state) = rotate_right(t) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 6);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 1);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_1() {
+        let t = rotate_right(new_t(10));
+        if let Piece::T(rotated_state) = rotate_right(t) {
+            assert_eq!(2, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 1);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 4);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_2() {
+        let t = rotate_right(rotate_right(new_t(10)));
+        if let Piece::T(rotated_state) = rotate_right(t) {
+            assert_eq!(3, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 4);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, -1);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_3() {
+        let t = rotate_right(rotate_right(rotate_right(new_t(10))));
+        if let Piece::T(rotated_state) = rotate_right(t) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, -1);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 6);
+            assert_eq!(s4.y, 0);
+        }
+    }
+}
+
+#[cfg(test)]
+mod s_tests {
+    use super::*;
+
+    #[test]
+    fn rotate_position_0() {
+        let s = new_s(10);
+        if let Piece::S(rotated_state) = rotate_left(s) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 4);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 4);
+            assert_eq!(s4.y, -1);
+        }
+    }
+
+    #[test]
+    fn rotate_position_1() {
+        let s = rotate_left(new_s(10));
+        if let Piece::S(rotated_state) = rotate_left(s) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, -1);
+            assert_eq!(s4.x, 6);
+            assert_eq!(s4.y, -1);
+        }
+    }
+}
+
+#[cfg(test)]
+mod z_tests {
+    use super::*;
+
+    #[test]
+    fn rotate_position_0() {
+        let z = new_z(10);
+        if let Piece::Z(rotated_state) = rotate_left(z) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 6);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 6);
+            assert_eq!(s4.y, -1);
+        }
+    }
+
+    #[test]
+    fn rotate_position_1() {
+        let z = rotate_left(new_z(10));
+        if let Piece::Z(rotated_state) = rotate_left(z) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, -1);
+            assert_eq!(s4.x, 4);
+            assert_eq!(s4.y, -1);
+        }
+    }
+}
+
+#[cfg(test)]
+mod j_tests {
+    use super::*;
+
+    #[test]
+    fn rotate_left_position_0() {
+        let j = new_j(10);
+        if let Piece::J(rotated_state) = rotate_left(j) {
+            assert_eq!(3, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 4);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 3);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_3() {
+        let j = rotate_left(new_j(10));
+        if let Piece::J(rotated_state) = rotate_left(j) {
+            assert_eq!(2, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 2);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_2() {
+        let j = rotate_left(rotate_left(new_j(10)));
+        if let Piece::J(rotated_state) = rotate_left(j) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 6);
+            assert_eq!(s4.y, 0);
+            assert_eq!(s4.x, 7);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_1() {
+        let j = rotate_left(rotate_left(rotate_left(new_j(10))));
+        if let Piece::J(rotated_state) = rotate_left(j) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, -1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, -2);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_0() {
+        let j = new_j(10);
+        if let Piece::J(rotated_state) = rotate_right(j) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 6);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 7);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_1() {
+        let j = rotate_right(new_j(10));
+        if let Piece::J(rotated_state) = rotate_right(j) {
+            assert_eq!(2, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 2);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_2() {
+        let j = rotate_right(rotate_right(new_j(10)));
+        if let Piece::J(rotated_state) = rotate_right(j) {
+            assert_eq!(3, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 4);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 3);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_3() {
+        let j = rotate_right(rotate_right(rotate_right(new_j(10))));
+        if let Piece::J(rotated_state) = rotate_right(j) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, -1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, -2);
+        }
+    }
+}
+
+#[cfg(test)]
+mod l_tests {
+    use super::*;
+
+    #[test]
+    fn rotate_left_position_0() {
+        let l = new_l(10);
+        if let Piece::L(rotated_state) = rotate_left(l) {
+            assert_eq!(3, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 4);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 3);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_3() {
+        let l = rotate_left(new_l(10));
+        if let Piece::L(rotated_state) = rotate_left(l) {
+            assert_eq!(2, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 2);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_2() {
+        let l = rotate_left(rotate_left(new_l(10)));
+        if let Piece::L(rotated_state) = rotate_left(l) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 6);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 7);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_left_position_1() {
+        let l = rotate_left(rotate_left(rotate_left(new_l(10))));
+        if let Piece::L(rotated_state) = rotate_left(l) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, -1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, -2);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_0() {
+        let l = new_l(10);
+        if let Piece::L(rotated_state) = rotate_right(l) {
+            assert_eq!(1, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, 1);
+            assert_eq!(s3.x, 6);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 7);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_1() {
+        let l = rotate_right(new_l(10));
+        if let Piece::L(rotated_state) = rotate_right(l) {
+            assert_eq!(2, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 4);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, 1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, 2);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_2() {
+        let l = rotate_right(rotate_right(new_l(10)));
+        if let Piece::L(rotated_state) = rotate_right(l) {
+            assert_eq!(3, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s1.y, 0);
+            assert_eq!(s2.x, 5);
+            assert_eq!(s2.y, -1);
+            assert_eq!(s3.x, 4);
+            assert_eq!(s3.y, 0);
+            assert_eq!(s4.x, 3);
+            assert_eq!(s4.y, 0);
+        }
+    }
+
+    #[test]
+    fn rotate_right_position_3() {
+        let l = rotate_right(rotate_right(rotate_right(new_l(10))));
+        if let Piece::L(rotated_state) = rotate_right(l) {
+            assert_eq!(0, rotated_state.position);
+            let (s1, s2, s3, s4) = rotated_state.coords;
+            assert_eq!(s1.x, 5);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s2.x, 6);
+            assert_eq!(s2.y, 0);
+            assert_eq!(s3.x, 5);
+            assert_eq!(s3.y, -1);
+            assert_eq!(s4.x, 5);
+            assert_eq!(s4.y, -2);
+        }
     }
 }

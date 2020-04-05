@@ -67,6 +67,7 @@ impl event::EventHandler for GameState {
     ) {
         match keycode {
             Keycode::D => self.grid.rotate_right(),
+            Keycode::A => self.grid.rotate_left(),
             Keycode::Down => {
                 self.grid.down();
                 ()

@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use tetris::piece::{down, into_set, left, random, right, rotate_right, Coord, Piece};
+use tetris::piece::{down, into_set, left, random, right, rotate_left, rotate_right, Coord, Piece};
 
 // A grid is the set of occupied coords
 pub struct Grid {
@@ -21,6 +21,21 @@ impl Grid {
             state,
             piece,
             next_piece,
+        }
+    }
+
+    pub fn rotate_left(&mut self) {
+        let piece = self.piece.to_owned();
+        let aspirational_piece = rotate_left(piece);
+        let aspirational_set = into_set(&piece);
+        if self.state.intersection(&into_set(&piece)).count() == 0 {
+            self.piece = aspirational_piece;
+            if aspirational_set.iter().any(|coord| coord.x < 0) {
+                self.right();
+            }
+            if aspirational_set.iter().any(|coord| coord.x > self.width) {
+                self.left();
+            }
         }
     }
 
@@ -84,7 +99,7 @@ impl Grid {
         }
     }
 
-    pub fn tick(&mut self) -> u8 {
+    pub fn tick(&mut self) -> usize {
         if !self.down() {
             let next_coords = into_set(&self.piece);
             let next_state: HashSet<Coord> =
@@ -94,7 +109,7 @@ impl Grid {
                 acc.insert(i.y, v + 1);
                 acc
             });
-            let mut dead_lines: Vec<&i8> = line_counts
+            let dead_lines: Vec<&i8> = line_counts
                 .iter()
                 .filter(|(_, count)| **count == self.width)
                 .map(|(line, _)| line)
@@ -102,8 +117,9 @@ impl Grid {
             self.state = next_state;
             self.piece = self.next_piece;
             self.next_piece = random(self.width);
-            dead_lines.len();
+            dead_lines.len()
+        } else {
+            0
         }
-        0
     }
 }
